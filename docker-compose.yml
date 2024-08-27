@@ -1,0 +1,15 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"  # Expose le port Redis sur le port 6379 de votre machine locale
+    volumes:
+      - redis_data:/data  # Optionnel: Persistance des données Redis
+
+volumes:
+  redis_data:
