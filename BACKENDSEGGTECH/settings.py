@@ -1,12 +1,19 @@
 # settings.py
 
-from pathlib import Path
-import environ
-from datetime import timedelta
 import os
+from datetime import timedelta
+from pathlib import Path
+
+import environ
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'photos')  # Mettez à jour pour pointer vers 'photos'
+
+# Créer le répertoire si nécessaire
+os.makedirs(os.path.join(MEDIA_ROOT, 'photos'), exist_ok=True)
 SECRET_KEY = 'django-insecure-id)vah!86$0p1y5ri%uj0+11lw%9@!^gqv@jp6!l@68a(dm&l5'
 DEBUG = True
 ALLOWED_HOSTS = ['*']
@@ -24,7 +31,6 @@ INSTALLED_APPS = [
     'corsheaders',
 
 ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -60,7 +66,6 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
-
 
 SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
@@ -116,7 +121,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'seggtech',
         'USER': 'postgres',
-        'PASSWORD': 'root',
+        'PASSWORD': 'postgres',
         'HOST': 'localhost',
         'PORT': '5432',
     }

@@ -1,6 +1,6 @@
-# models.py
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.db import models
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -18,19 +18,23 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     nom = models.CharField(max_length=100)
+    telephone = models.CharField(max_length=15, blank=True, null=True)  # Champ pour le numéro de téléphone
+    photo = models.ImageField(upload_to='photos/', blank=True, null=True)  # Champ pour la photo de profil
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nom']
+    REQUIRED_FIELDS = ['nom']  # Le champ 'nom' est requis lors de la création d'un utilisateur
 
     def __str__(self):
         return self.email
+
 
 class Mesure(models.Model):
     temperature = models.FloatField(null=True)
