@@ -1,5 +1,3 @@
-# docker-compose.yml
-
 version: '3.8'
 
 services:
@@ -7,9 +5,22 @@ services:
     image: redis:7
     container_name: redis
     ports:
-      - "6379:6379"  # Expose le port Redis sur le port 6379 de votre machine locale
+      - "6379:6379"
     volumes:
-      - redis_data:/data  # Optionnel: Persistance des données Redis
+      - redis_data:/data
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: seggtech
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   redis_data:
+  postgres_data:

@@ -7,7 +7,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import *
 from .serializers import *
 
 
@@ -15,7 +14,7 @@ from .serializers import *
 def mesure_list(request):
     if request.method == 'GET':
         mesures = Mesure.objects.all()
-        serializer = MesureSerializer(mesures, many=True)
+        serializer = MesureSerializer(mesures, many=True, context={'request': request})
         return Response(serializer.data)
     elif request.method == 'POST':
         serializer = MesureSerializer(data=request.data)
@@ -56,8 +55,8 @@ def user_list(request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            user.set_password(serializer.validated_data['password'])  # Hacher le mot de passe ici
-            user.save()  # Enregistrer l'utilisateur avec le mot de passe haché
+            user.set_password(serializer.validated_data['password'])
+            user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -75,10 +74,10 @@ def user_detail(request, id):
     elif request.method == 'PUT':
         serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
-            user = serializer.save(commit=False)  # Utiliser commit=False pour éviter d'enregistrer avant le hachage
-            if 'password' in request.data and request.data['password']:  # Vérifier si un mot de passe a été fourni
-                user.set_password(request.data['password'])  # Hacher le nouveau mot de passe
-            user.save()  # Enregistrer l'utilisateur
+            user = serializer.save(commit=False)
+            if 'password' in request.data and request.data['password']:
+                user.set_password(request.data['password'])
+            user.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
@@ -123,14 +122,13 @@ def login_view(request):
     if user is not None:
         if user.is_active:
             refresh = RefreshToken.for_user(user)
-            # Vérifie si l'URL de la photo est valide
-            photo_url = user.photo.url if user.photo else None  # Utilise le bon champ ici
+            photo_url = user.photo.url if user.photo else None
 
             user_data = {
                 'email': user.email,
                 'nom': user.nom,
                 'telephone': user.telephone,
-                'photo': photo_url,  # Renvoie l'URL ou None
+                'photo': photo_url,
                 'is_active': user.is_active,
             }
             return Response({
@@ -178,7 +176,6 @@ def store_sensor_data(request):
             cache.set(cache_key, data, timeout=60)
             return Response({"message": "Données des capteurs stockées avec succès", "id": id_counter},
                             status=status.HTTP_201_CREATED)
-
         except json.JSONDecodeError:
             return Response({"error": "Invalid JSON"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
@@ -190,12 +187,10 @@ def store_sensor_data(request):
 @api_view(['GET'])
 def get_sensor_data(request):
     sensor_data = []
-
     for key in cache.keys('sensor_data:*'):
         data = cache.get(key)
         if data:
             sensor_data.append(data)
-
     if sensor_data:
         return Response(sensor_data, status=status.HTTP_200_OK)
     return Response({'error': 'Data not found'}, status=status.HTTP_404_NOT_FOUND)

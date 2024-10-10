@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'photos')  # Mettez à jour pour pointer vers 'photos'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'photos')
 
 # Créer le répertoire si nécessaire
 os.makedirs(os.path.join(MEDIA_ROOT, 'photos'), exist_ok=True)
@@ -80,9 +80,7 @@ SIMPLE_JWT = {
 WSGI_APPLICATION = 'BACKENDSEGGTECH.wsgi.application'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 AUTH_USER_MODEL = 'seggtech.User'
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",  # L'adresse de votre frontend Angular
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
@@ -90,16 +88,7 @@ CORS_ALLOW_HEADERS = [
     'content-type',
     'authorization',
 ]
-CORS_ALLOW_METHODS = [
-    'GET',
-    'POST',
-    'PUT',
-    'PATCH',
-    'DELETE',
-    'OPTIONS',
-]
-
-# settings.py
+CORS_ALLOW_ALL_METHODS = True
 
 # settings.py
 REDIS_HOST = 'localhost'

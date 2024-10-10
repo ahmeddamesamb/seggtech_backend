@@ -5,7 +5,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin', admin.site.urls),
-    path('api', include('seggtech.urls')),  # Assure-toi que le chemin est correct
+    path('api/', include('seggtech.urls')),  # Assure-toi que le chemin est correct
 ]
 
 # Servir les fichiers médias en mode DEBUG

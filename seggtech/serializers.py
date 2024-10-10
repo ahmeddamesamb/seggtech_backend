@@ -1,17 +1,23 @@
 from rest_framework import serializers
 
-from .models import User
+from .models import User, Mesure
 
 
 class UserSerializer(serializers.ModelSerializer):
-    photo_url = serializers.SerializerMethodField()  # Champ personnalisé pour l'URL complète
+    photo_url = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['email', 'nom', 'telephone', 'photo']  # Inclure 'photo_url' dans les champs
+        fields = ['email', 'nom', 'telephone', 'photo']
 
     def get_photo_url(self, obj):
-        request = self.context.get('request')  # Récupère l'objet request depuis le contexte
-        if obj.photo:  # Vérifie si une photo est présente
-            return request.build_absolute_uri(obj.photo.url)  # Génère l'URL complète avec le domaine
+        request = self.context.get('request')
+        if obj.photo:
+            return request.build_absolute_uri(obj.photo.url)
         return None
+
+
+class MesureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Mesure
+        fields = ['temperature', 'tds', 'turbidite', 'ph', 'conductivite', 'oxygene', 'timestamp']
